@@ -15,7 +15,7 @@
   </div>
 </template>  
 
-<script setup>
+<script setup lang="ts">
 const imgUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 </script>
 

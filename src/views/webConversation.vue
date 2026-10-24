@@ -163,26 +163,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { sessionStart, sendStream, getSessionlist, deleteSession, getSessionTree, getEmotion } from '@/api/frontend'
 import { ElMessage } from 'element-plus'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
+import type { ApiRecord, ChatMessage, ChatSession, EmotionAnalysis } from '@/types'
 
 const url = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 const url01 = new URL('@/assets/images/like.png', import.meta.url).href
 const url02 = new URL('@/assets/images/users.png', import.meta.url).href
 // 对话消息
-const chatMessages = ref([])
+const chatMessages = ref<ChatSession[]>([])
 // 输入内容
 const inputText = ref('')
 // AI助手是否在正在输入
 const isAiTyping = ref(false)
 // 对话消息树
-const sessionTree = ref([])
+const sessionTree = ref<ChatMessage[]>([])
 // 当前会话对象
-const currentSession = ref(null)
+const currentSession = ref<ChatSession | null>(null)
 // 创建会话
 const createNewSession = () => {
   const newSession = {
@@ -222,7 +223,7 @@ const sendMessage = () => {
   }
 }
 const startNewSession = (message) => {
-  const params = {
+  const params: ApiRecord = {
     initialMessage: message
   }
   if (currentSession.value.sessionTitle === '新对话') {
@@ -286,7 +287,7 @@ const startAIResponse = (sessionId, usermessage) => {
       userMessage: usermessage,
     }),
     signal: abortController.signal,
-    onopen: (response) => {
+    onopen: async (response) => {
       if (response.headers.get('Content-Type') !== 'text/event-stream') {
         ElMessage.error('服务器返回非流式数据！')
       }
@@ -363,13 +364,14 @@ const handleSessionDelete = (sessionId) => {
 const formatMarkdown = (content) => {
   return content.replace(/\\n/g, '<br>')
 }
-const currentEmotion = ref({
+const currentEmotion = ref<EmotionAnalysis>({
   primaryEmotion: '中性',
   emotionScore: 50,
   isNegative: false,
   riskLevel: 0,
   suggestion: '情绪状态稳定',
   improvementSuggestions: [],
+  riskDescription: '',
 })
 const getIntensityClass = (score) => {
   if (score >= 61) return 3

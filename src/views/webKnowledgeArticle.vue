@@ -44,17 +44,18 @@
   </div>
 </div>
 </template>  
-<script setup>
+<script setup lang="ts">
 import { dayjs } from 'element-plus'
 import { ref, onMounted, reactive } from 'vue'
 import { getKnowledgeDetail } from '@/api/frontend'
+import type { ApiRecord } from '@/types'
 
 import imgUrl from '@/assets/images/book.png'
 const props = defineProps({
   id: String,
 })
-const article = ref({})
-const formatContent = (content) => {
+const article = ref<ApiRecord>({})
+const formatContent = (content: string) => {
   if (!content) return ''
   // 基本的HTML清理和格式化
   let formatted = content

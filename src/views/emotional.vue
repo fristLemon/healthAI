@@ -117,12 +117,13 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import PageHead from '@/components/pageHead.vue'
 import TableSearch from '@/components/TableSearch.vue'
 import { getEmotionalList, getEmotionalDelete } from '@/api/admin'
+import type { ApiRecord, SearchItem } from '@/types'
 
 const getEmotionTagType = (emotion) => {
   const emotionTypes = {
@@ -175,7 +176,7 @@ const getRiskLevelText = (riskLevel) => {
   return riskTextMap[riskLevel] || '未知风险等级'
 }
 
-const searchItem = ref([
+const searchItem = ref<SearchItem[]>([
   {
     prop: 'userId',
     label: '用户ID',
@@ -203,11 +204,11 @@ const handleChange = (val) => {
   pagination.currentPage = val
   handleSearch()
 }
-const tableData = ref([])
-const handleSearch = (formData) => {
+const tableData = ref<ApiRecord[]>([])
+const handleSearch = (formData: Record<string, unknown> = {}) => {
   console.log(formData)
   const params = {
-    ...pagination.value,
+    ...pagination,
     ...formData
     // userId: formData?.userId || '',
     // minMoodScore: formData.emotionotionalScore,
@@ -234,9 +235,9 @@ const handleDelete = (row) => {
 }
 // 详情
 const detailVisible = ref(false)
-const nowDetail = ref(null)
-const aiData = ref(null)
-const handleDetail = (row) => {
+const nowDetail = ref<ApiRecord | null>(null)
+const aiData = ref<ApiRecord>({})
+const handleDetail = (row: ApiRecord) => {
   console.log(row)
   if (row.aiEmotionAnalysis) {
     aiData.value = JSON.parse(row.aiEmotionAnalysis)

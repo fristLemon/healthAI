@@ -55,7 +55,7 @@
 </div>
 </template>  
 
-<script setup>
+<script setup lang="ts">
 import { dayjs } from 'element-plus'
 import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'

@@ -1,11 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { getCategoryTree, getKnowledgeList, knowledgeArticleDetail, knowledgeArticleDelete, knowledgeArticleStatus  } from '@/api/admin'
 import PageHead from '@/components/pageHead.vue'
 import TableSearch from '@/components/TableSearch.vue'
 import ArticleDig from '@/components/ArticleDig.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
-const fromItem = [
+import type { ApiRecord, Article, Category, CategoryOption, SearchItem } from '@/types'
+const fromItem: SearchItem[] = [
   {
     type: 'input',
     placeholder: '请输入搜索内容',
@@ -36,7 +37,7 @@ const pagination = reactive({
   size: 10,
   total: 0
 })
-const handleSearch = (datas) => {
+const handleSearch = (datas: Record<string, unknown> = {}) => {
   console.log(datas, '--from')
   const params = {
     ...pagination, ...datas
@@ -53,17 +54,17 @@ const handleChange = (val) => {
   handleSearch()
 }
 
-const categoryMap = reactive({})
-const categories = ref([])
-const tableData = ref([])
+const categoryMap = reactive<Record<string | number, string>>({})
+const categories = ref<CategoryOption[]>([])
+const tableData = ref<Article[]>([])
 const digVisible = ref(false)
-const nowArticle = ref(null)
+const nowArticle = ref<Article | null>(null)
 
 const handleSuccess = () => {
   digVisible.value = false
   handleSearch()
 }
-const handleEdit = (row) => {
+const handleEdit = (row: Partial<Article>) => {
   if (!row.id) {
     nowArticle.value = null
     digVisible.value = true
@@ -75,7 +76,7 @@ const handleEdit = (row) => {
     })
   } 
 }
-const handlePublish = (row) => {
+const handlePublish = (row: Article) => {
   ElMessageBox.confirm(`确认发布${row.title}吗？`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -89,7 +90,7 @@ const handlePublish = (row) => {
     })
   })
 }
-const handleUnPublish = (row) => {
+const handleUnPublish = (row: Article) => {
   ElMessageBox.confirm(`确认下线文章${row.title}吗？`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -101,7 +102,7 @@ const handleUnPublish = (row) => {
     })
   })
 }
-const handleDelete = (row) => {
+const handleDelete = (row: Article) => {
   ElMessageBox.confirm(`确认删除${row.title}吗？`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',

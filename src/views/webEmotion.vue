@@ -72,7 +72,7 @@
   </div>
 </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { dayjs, ElMessage } from 'element-plus'
 import { ref, reactive } from 'vue'
 import { submitEmotion } from '@/api/frontend'

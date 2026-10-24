@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
 
-const backendRouters = [
+const backendRouters: RouteRecordRaw[] = [
   {
     path: "/back",
     redirect: "/back/dashboard",
@@ -69,7 +69,7 @@ const backendRouters = [
     ] 
   }
 ];
-const webRouters = [
+const webRouters: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import("@/components/WebLayout.vue"),
@@ -110,7 +110,7 @@ router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   // 是否登录
   if(token){
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') as string) as { userType: number }
     if(userInfo.userType === 2){
       if(to.path.startsWith('/back')){
         next()
@@ -135,4 +135,3 @@ router.beforeEach((to, from, next) => {
   }
 })
 export default router;
-

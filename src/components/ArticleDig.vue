@@ -53,27 +53,22 @@
   </el-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed, nextTick, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { uploadFile, knowledgeArticle, knowledgeArticleUpdate } from '@/api/admin'
 import { fileBaseUrl } from '@/config/index.js'
 import RichTextEditor from '@/components/RichTextEditor.vue'
+import type { Article, CategoryOption } from '@/types'
 
 const visible = ref(false)
-const props = defineProps({
-  modelVal: {
-    type: Boolean,
-    default: false
-  },
-  categories: {
-    type: Array,
-    default: () => []
-  },
-  nowArticle: {
-    type: Object,
-    default: null
-  },
+const props = withDefaults(defineProps<{
+  modelVal: boolean
+  categories: CategoryOption[]
+  nowArticle: Article | null
+}>(), {
+  categories: () => [],
+  nowArticle: null,
 })
 const emit = defineEmits(['update:modelVal', 'success'])
 const dialogVisible = computed({
@@ -83,7 +78,10 @@ const dialogVisible = computed({
 const isEdit = computed(() => !!props.nowArticle?.id)
 watch(() => props.nowArticle, (newVal) => {
   if (newVal) {
-    Object.assign(formData, { ...newVal, tags:  newVal.tags ? newVal.tags.split(',') : '' })
+    Object.assign(formData, {
+      ...newVal,
+      tags: Array.isArray(newVal.tags) ? newVal.tags : newVal.tags ? newVal.tags.split(',') : [],
+    })
     businessId.value = newVal.businessId
     imgUrl.value = newVal.coverImage ? fileBaseUrl + newVal.coverImage : ''
   }
@@ -101,7 +99,7 @@ const formData = reactive({
     coverImage: "",
     categoryId: '',
     summary: "",
-    tags: "",
+    tags: [] as string[],
     id: ""
 })
 const rules = reactive({
@@ -115,8 +113,8 @@ const commonTags = ['情绪管理', '焦虑', '抑郁', '压力', '睡眠',
 
 const uploadUrl = '/back/article/upload'
 const imgUrl = ref('')
-const businessId = ref(null)
-const beforeUpload = (file) => {
+const businessId = ref<string | null>(null)
+const beforeUpload = (file: File) => {
   const isimg = file.type.startsWith('image/')
   const isli5 = file.size / 1024 / 1024 < 5
   console.log('beforeUpload---', file, isimg, isli5)
@@ -130,7 +128,7 @@ const beforeUpload = (file) => {
   }
   return true;
 }
-const handleAvatarSuccess = async ({file}) => {
+const handleAvatarSuccess = async ({file}: { file: File }) => {
   console.log(file, '--handleAvatarSuccess')
   businessId.value = crypto.randomUUID()
   const res = await uploadFile(file, {
@@ -144,7 +142,7 @@ const handleRemove = () => {
   imgUrl.value = ''
   formData.coverImage = ''
 }
-const handleContentChange = (val) => {
+const handleContentChange = (val: { html: string }) => {
   console.log(val, '--富文本val')
   formData.content = val.html
 }

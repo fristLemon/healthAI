@@ -1,17 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
+import type { SearchItem } from '@/types'
 
-const props = defineProps({
-  fromItem: {
-    type: Array,
-    default: () => []
-  }
+const props = withDefaults(defineProps<{ fromItem: SearchItem[] }>(), {
+  fromItem: () => [],
 })
 const emit = defineEmits(['search'])
 
 const formRef = ref()
 // 定义表单数据
-const formData = reactive({})
+const formData = reactive<Record<string, unknown>>({})
 // 初始化表单数据
 const fromItemAtrrs = computed(() => {
   const {fromItem} = props
@@ -21,7 +19,7 @@ const fromItemAtrrs = computed(() => {
   return fromItem
 })
 
-const isComp = (type) => {
+const isComp = (type: SearchItem['type']) => {
   return {
     input: 'elInput',
     select: 'elSelect',
@@ -30,7 +28,7 @@ const isComp = (type) => {
 const handleSearch = () => {
   emit('search', formData)
 }
-const handleReset = (formEl) => {
+const handleReset = (formEl: { resetFields: () => void } | undefined) => {
   if(!formEl) return;
   formEl.resetFields()
   emit('search', formData)

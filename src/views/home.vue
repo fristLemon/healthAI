@@ -16,7 +16,7 @@
   </div>
 </template>  
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 const url = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 </script>

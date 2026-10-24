@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
@@ -32,7 +32,7 @@ const handleMenu = (key) => {
       </div>
       <el-menu-item v-for="item in router.options.routes[0].children" :key="item.name"
       @click="handleMenu"
-      :index="item.name">
+      :index="String(item.name)">
         <el-icon><component :is="item.meta.icon" /></el-icon>
         <span>{{ item.meta.title }}</span>
       </el-menu-item>

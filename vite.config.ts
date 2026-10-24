@@ -1,8 +1,10 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {resolve} from 'path'
 
-// https://vite.dev/config/
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -15,8 +17,6 @@ export default defineConfig({
       '/api': {
         target: 'http://159.75.169.224:1235',
         changeOrigin: true,
-        // secure: false,
-        // rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },

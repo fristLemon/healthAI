@@ -64,18 +64,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import PageHead from '@/components/pageHead.vue'
 import { getSessionsList, getSessionDetail } from '@/api/admin'
+import type { ApiRecord, ChatSession } from '@/types'
 
-const tableData = ref([])
+const tableData = ref<ChatSession[]>([])
 const pagination = reactive({
   currentPage: 1,
   size: 10,
   total: 0,
 })
-const handleChange = (val) => {
+const handleChange = (val: number) => {
   pagination.currentPage = val
   handleSearch()
 }
@@ -88,10 +89,10 @@ const handleSearch = () => {
 }
 
 const dialogVisible = ref(false)
-const detailData = ref({})
-const detailMessages = ref([])
+const detailData = ref<ApiRecord>({})
+const detailMessages = ref<ApiRecord[]>([])
 const loadingMsg = ref(false)
-const handleDetail = (row) => {
+const handleDetail = (row: ChatSession) => {
   console.log(row)
   loadingMsg.value = true
   dialogVisible.value = true

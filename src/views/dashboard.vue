@@ -109,18 +109,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { getDataAnalyticsOverview } from '@/api/admin'
 import * as echarts from 'echarts'
-const analyticsOverview = ref({})
+import type { ApiRecord } from '@/types'
+const analyticsOverview = ref<ApiRecord>({})
 const url1 = new URL('@/assets/images/users.png', import.meta.url).href
 const url2 = new URL('@/assets/images/like.png', import.meta.url).href
 const url3 = new URL('@/assets/images/comments.png', import.meta.url).href
 const url4 = new URL('@/assets/images/smile.png', import.meta.url).href
 
-let emotionChart = null
-const emotionChartRef = ref(null)
+let emotionChart: echarts.ECharts | null = null
+const emotionChartRef = ref<HTMLElement | null>(null)
 const initCharts = () => {
   initEmotionChart()
   initConsultationChart()
@@ -221,8 +222,8 @@ const initEmotionChart = () => {
   }
   emotionChart.setOption(option)
 }
-const consultationChartRef = ref(null)
-let consultationChart = null
+const consultationChartRef = ref<HTMLElement | null>(null)
+let consultationChart: echarts.ECharts | null = null
 const initConsultationChart = () => {
   if (!consultationChartRef.value) return
   if (consultationChart) {
@@ -335,8 +336,8 @@ const initConsultationChart = () => {
   }
   consultationChart.setOption(option)
 }
-const userChartRef = ref(null)
-let userChart = null
+const userChartRef = ref<HTMLElement | null>(null)
+let userChart: echarts.ECharts | null = null
 const initUserChart = () => {
   if (!userChartRef.value) return
   if (userChart) {
